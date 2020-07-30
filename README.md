@@ -21,7 +21,7 @@ This plugin supports Opencart version 3.0.3.2 and higher.
  4. On the confirmation page, review your changes then click the “Confirm button”.
 
  ## Documentation
-[Opencart documentation]()
+[Opencart documentation](https://github.com/asiapay-lib/asiapay-OpenCart/blob/master/opencart_install_module_screenshots.docx?raw=true)
 
 ## Support
 If you have a feature request, or spotted a bug or a technical problem, create a GitHub issue. For other questions, contact our [Customer Service](https://www.paydollar.com/en/contactus.html).
