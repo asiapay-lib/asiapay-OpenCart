@@ -2,7 +2,7 @@
 Use PayDollar/SaimPay/PesoPays plugin for Opencart to offer ALL payments option.
 
 ## Integration
-The plugin integrates integrate Opencart with PayDollar/SaimPay/PesoPay payment gateway with All payment method.
+The plugin integrates Opencart with PayDollar/SaimPay/PesoPay payment gateway with All payment method.
 
 ## Requirements
 This plugin supports Opencart version 3.0.3.2 and higher.
@@ -27,3 +27,4 @@ This plugin supports Opencart version 3.0.3.2 and higher.
 If you have a feature request, or spotted a bug or a technical problem, create a GitHub issue. For other questions, contact our [Customer Service](https://www.paydollar.com/en/contactus.html).
 
 ## License
+MIT license. For more information, see the LICENSE file.
