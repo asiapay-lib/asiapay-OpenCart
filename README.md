@@ -1,6 +1,9 @@
 # PayDollar/SaimPay/PesoPay Payment plugin for Opencart
 Use PayDollar/SaimPay/PesoPays plugin for Opencart to offer ALL payments option.
 
+## Download
+Please download the latest plugin version. [Download](https://github.com/asiapay-lib/asiapay-OpenCart/releases/latest)
+
 ## Integration
 The plugin integrates Opencart with PayDollar/SaimPay/PesoPay payment gateway with All payment method.
 
