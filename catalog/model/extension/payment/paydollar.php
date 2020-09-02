@@ -28,5 +28,55 @@ class ModelExtensionPaymentPayDollar extends Model {
    
     	return $method_data;
   	}
+
+  	public function getDBAcctLogin($email){
+    	$query = $this->db->query("SELECT date_added FROM `" . DB_PREFIX . "customer_login` WHERE email = '" . $this->db->escape(utf8_strtolower($email)) . "' ORDER BY date_added DESC");
+    	if ($query->num_rows) {
+    		return $orderQuery->row['date_added'];
+    	}else{
+    		return false;
+    	}
+    	
+    }
+
+
+    public function getDBOrders($cid,$status){
+    	$orderStatus = 0;
+    	switch ($status) {
+    		case '6':// threeDSAcctPurchaseCount purchases during the previous six months
+    			$timeQ = date('Y-m-d H:i:s', strtotime("-6 months"));
+    			$orderStatus = 5; // complete status only
+    			break;
+    		case '24'://threeDSAcctNumTransDay purchases during the previous 24 hours(successful/abandoned) 
+    			$timeQ = date('Y-m-d H:i:s', strtotime("-1 day"));
+    			break;
+    		case '12'://threeDSAcctNumTransYear purchases during the previous 1 Year(successful/abandoned) 
+    			$timeQ = date('Y-m-d H:i:s', strtotime("-1 year"));
+    			break;
+    		default:
+    			# code...
+    			break;
+    	}
+    	if($orderStatus>0){
+    		$orderQuery = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` WHERE customer_id = '" . (int)$cid . "' AND customer_id != '0' AND order_status_id > '0' AND order_status_id = '".$orderStatus."' AND date_added >= '$timeQ'");
+    		$q = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` WHERE customer_id = '" . (int)$cid . "' AND customer_id != '0' AND order_status_id > '0' AND order_status_id = '".$orderStatus."' AND date_added >= '$timeQ'";
+    	}else{
+    		$orderQuery = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` WHERE customer_id = '" . (int)$cid . "' AND customer_id != '0' AND order_status_id > '0' AND date_added >= '$timeQ'");	
+    		$q = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` WHERE customer_id = '" . (int)$cid . "' AND customer_id != '0' AND order_status_id > '0' AND date_added >= '$timeQ'";
+    	}
+    	
+
+    	if ($orderQuery->num_rows) {
+    		return $orderQuery->row['total'];
+    	}else{
+    		return false;
+    	}
+    }
+
+    public function getDateAdded($cid) {
+		$query = $this->db->query("SELECT date_added FROM " . DB_PREFIX . "customer WHERE customer_id = '" . (int)$cid . "'");
+
+		return $query->row['date_added'];
+	}
 }
 ?>
