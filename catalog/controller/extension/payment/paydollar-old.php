@@ -402,8 +402,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		/* Secure Hash End */
 		
 		$paramsReceived = '';
-		// while ( list ( $key, $value ) = each ( $_POST ) ) {
-		foreach($_POST as $key => $value) {
+		while ( list ( $key, $value ) = each ( $_POST ) ) {
 			$paramsReceived .= '[' . $key . ']=[' . $value . '],';
 		}
 		echo $paramsReceived;
