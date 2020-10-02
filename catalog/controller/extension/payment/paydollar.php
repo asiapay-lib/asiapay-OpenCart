@@ -46,7 +46,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		$orderRef = $this->session->data ['order_id'];
 		$data ['orderRef'] = $orderRef;
 		
-		$payType = $this->config->get ( 'payment_paydollar_payment_type' );
+		$payType = substr($this->config->get ( 'payment_paydollar_payment_type' ),0,1);
 		$data ['payType'] = $payType;
 		
 		$data ['payMethod'] = $this->config->get ( 'payment_paydollar_paymethod' );
@@ -267,7 +267,8 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		if (isset ( $secureHash ) && $secureHash && $secureHashSecret) {			
 			$secureHashs = explode ( ',', $secureHash );			
 			$paydollarSecure = new SHAPaydollarSecure ();
-			while ( list ( $key, $value ) = each ( $secureHashs ) ) {
+			// while ( list ( $key, $value ) = each ( $secureHashs ) ) {
+			foreach($secureHashs as $key => $value){
 				$verifyResult = $paydollarSecure->verifyPaymentDatafeed ( $src, $prc, $successcode, $ref, $payRef, $cur, $amt, $payerAuth, $secureHashSecret, $value );
 				echo '$secureHash=[' . $value . ']';
 				if ($verifyResult) {
@@ -287,7 +288,8 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		/* Secure Hash End */
 		
 		$paramsReceived = '';
-		while ( list ( $key, $value ) = each ( $_POST ) ) {
+		// while ( list ( $key, $value ) = each ( $_POST ) ) {
+		foreach ($_POST as $key => $value) {
 			$paramsReceived .= '[' . $key . ']=[' . $value . '],';
 		}
 		echo $paramsReceived;
