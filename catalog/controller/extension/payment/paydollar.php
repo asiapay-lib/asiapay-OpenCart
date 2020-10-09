@@ -47,6 +47,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		$data ['orderRef'] = $orderRef;
 		
 		$payType = $this->config->get ( 'payment_paydollar_payment_type' );
+		$payType = substr($payType,0,1);
 		$data ['payType'] = $payType;
 		
 		$data ['payMethod'] = $this->config->get ( 'payment_paydollar_paymethod' );
@@ -84,7 +85,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		if ($secureHashSecret) {
 			require_once ('SHAPaydollarSecure.php');
 			$paydollarSecure = new SHAPaydollarSecure ();
-			$secureHash = $paydollarSecure->generatePaymentSecureHash ( $merchantId, $orderRef, $currCode, $amount, $payType, $secureHashSecret );
+			$secureHash = $paydollarSecure->generatePaymentSecureHash ( $merchantId, $orderRef, $data ['currCode'], $data ['amount'], $payType, $secureHashSecret );
 			$data ['secureHash'] = $secureHash;
 		} else {
 			$data ['secureHash'] = '';
@@ -406,7 +407,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		foreach($_POST as $key => $value) {
 			$paramsReceived .= '[' . $key . ']=[' . $value . '],';
 		}
-		echo $paramsReceived;
+		//echo $paramsReceived;
 		
 		//list of order status from opencart start
 		$Processing = 2;
@@ -426,7 +427,8 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 			if (isset ( $ref )) {				
 				if ($order_info) {
 					//update order status to Processing
-					$comment = $paramsReceived ;
+					//$comment = $paramsReceived ;
+					$comment = 'PayDollar PayRef: ' . $payRef ;
 					$notify = true;
 					$this->model_checkout_order->addOrderHistory($order_id, $Processing, str_replace('],',']<br/>',$comment), $notify);
 					echo " - Order status updated to: Processing";
