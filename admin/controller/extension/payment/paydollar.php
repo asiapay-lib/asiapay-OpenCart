@@ -340,6 +340,51 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 			'currency' => "840-USD");
 		$data['paydollar_currencies'][] = array(	
 			'currency' => "704-VND");
+
+		if (isset($this->request->post['payment_paydollar_transaction_type'])) {
+			$data['payment_paydollar_transaction_type'] = $this->request->post['payment_paydollar_transaction_type'];
+		} else {
+			$data['payment_paydollar_transaction_type'] = $this->config->get('payment_paydollar_transaction_type'); 
+		}
+		$data['paydollar_transaction_types'] = array();
+		$data['paydollar_transaction_types'][] = array(
+			'type' => "01-Goods/ Service Purchase");
+		$data['paydollar_transaction_types'][] = array(	
+			'type' => "03-Check Acceptance");	
+		$data['paydollar_transaction_types'][] = array(	
+			'type' => "10-Account Funding");	
+		$data['paydollar_transaction_types'][] = array(	
+			'type' => "11-Quasi-Cash Transaction");	
+		$data['paydollar_transaction_types'][] = array(	
+			'type' => "28-Prepaid Activation and Load");	
+
+
+
+		if (isset($this->request->post['payment_paydollar_challenge_pref'])) {
+			$data['payment_paydollar_challenge_pref'] = $this->request->post['payment_paydollar_challenge_pref'];
+		} else {
+			$data['payment_paydollar_challenge_pref'] = $this->config->get('payment_paydollar_challenge_pref'); 
+		}
+
+		$data['paydollar_challenge_prefs'] = array();
+		$data['paydollar_challenge_prefs'][] = array(
+			'type' => "01-No preference");
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "02-No challenge requested *");	
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "03-Challenge requested (Merchant preference)");	
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "04-Challenge requested (Mandate)");	
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "05-No challenge requested (transactional risk analysis is already performed) *");
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "06-No challenge requested (Data share only)*");
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "07-No challenge requested (strong consumer authentication is already performed) *");
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "08-No challenge requested (utilise whitelist exemption if no challenge required) *");
+		$data['paydollar_challenge_prefs'][] = array(	
+			'type' => "09-Challenge requested (whitelist prompt requested if challenge required)");	
 		
 		
 		$data['header'] = $this->load->controller('common/header');
