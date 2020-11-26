@@ -93,7 +93,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 
 		//3DS 2.0
 		$transactionType = $this->config->get ( 'payment_paydollar_transaction_type' );
-		$data ['threeDSTransType'] = substr($transactionType,0,2);
+		$data ['threeDSTransType'] = isset($transactionType)&&($transactionType)?substr($transactionType,0,2):"";
 
 		// $isLogged = $this->customer->isLogged();
 
@@ -109,18 +109,18 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 			$customerEmail = $this->customer->getEmail();
 			// print_r($address);
 
-			$data ['threeDSCustomerEmail'] = $customerEmail;
-			$data ['threeDSDeliveryEmail'] = $customerEmail;
-			$data ['threeDSMobilePhoneCountryCode'] = $this->_getCountryPhoneCode($address['iso_code_2']);
+			$data ['threeDSCustomerEmail'] = isset($customerEmail)&&($customerEmail)?$customerEmail:"";
+			$data ['threeDSDeliveryEmail'] = isset($customerEmail)&&($customerEmail)?$customerEmail:"";
+			$data ['threeDSMobilePhoneCountryCode'] = isset($address['iso_code_2'])&&($address['iso_code_2'])?$this->_getCountryPhoneCode($address['iso_code_2']):"";
 
 			$customerPhone = preg_replace('/\D/', '',$this->customer->getTelephone());
 
-			$data ['threeDSMobilePhoneNumber'] = $customerPhone;
-			$data ['threeDSHomePhoneCountryCode'] = $this->_getCountryPhoneCode($address['iso_code_2']);
-			$data ['threeDSHomePhoneNumber'] = $customerPhone;
+			$data ['threeDSMobilePhoneNumber'] = isset($customerPhone)&&($customerPhone)?$customerPhone:"";
+			$data ['threeDSHomePhoneCountryCode'] = isset($address['iso_code_2'])&&($address['iso_code_2'])?$this->_getCountryPhoneCode($address['iso_code_2']):"";
+			$data ['threeDSHomePhoneNumber'] = isset($customerPhone)&&($customerPhone)?$customerPhone:"";
 
-			$data['threeDSWorkPhoneCountryCode'] = $this->_getCountryPhoneCode($address['iso_code_2']);
-			$data ['threeDSWorkPhoneNumber'] = $customerPhone;
+			$data['threeDSWorkPhoneCountryCode'] = isset($address['iso_code_2'])&&($address['iso_code_2'])?$this->_getCountryPhoneCode($address['iso_code_2']):"";
+			$data ['threeDSWorkPhoneNumber'] = isset($customerPhone)&&($customerPhone)?$customerPhone:"";
 
 
 			$customer_acctAuthMethod = "02"; // Login to the cardholder account at the merchant system using merchant‘s own credentials
@@ -128,15 +128,15 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 
 			$this->load->model ( 'extension/payment/paydollar' );
 			
-			$data['threeDSAcctCreateDate'] = date('Ymd', strtotime($this->model_extension_payment_paydollar->getDateAdded($customerid)));
+			$data['threeDSAcctCreateDate'] = isset($customerid)&&($customerid)?date('Ymd', strtotime($this->model_extension_payment_paydollar->getDateAdded($customerid))):"";
 			$customer_daydiff = $this->_getDateDiff($data['threeDSAcctCreateDate']);
 			$customer_acct_ageind =$this->_getAcctAgeInd($customer_daydiff);
-			$data['threeDSAcctAgeInd'] = $customer_acct_ageind;
+			$data['threeDSAcctAgeInd'] = isset($customer_acct_ageind)&&($customer_acct_ageind)?$customer_acct_ageind:"";
 
-			$data['threeDSAcctPurchaseCount'] = $this->model_extension_payment_paydollar->getDBOrders($customerid,6);
-			$data['threeDSAcctNumTransDay'] = $this->model_extension_payment_paydollar->getDBOrders($customerid,24);
-			$data['threeDSAcctNumTransYear'] = $this->model_extension_payment_paydollar->getDBOrders($customerid,12);
-			$data['threeDSAcctAuthTimestamp'] = $this->model_extension_payment_paydollar->getDBAcctLogin($customerEmail);
+			$data['threeDSAcctPurchaseCount'] = isset($customerid)&&($customerid)?$this->model_extension_payment_paydollar->getDBOrders($customerid,6):"";
+			$data['threeDSAcctNumTransDay'] = isset($customerid)&&($customerid)?$this->model_extension_payment_paydollar->getDBOrders($customerid,24):"";
+			$data['threeDSAcctNumTransYear'] = isset($customerid)&&($customerid)?$this->model_extension_payment_paydollar->getDBOrders($customerid,12):"";
+			$data['threeDSAcctAuthTimestamp'] = isset($customerid)&&($customerid)?$this->model_extension_payment_paydollar->getDBAcctLogin($customerEmail):"";
 
 		}else{
 			// echo "<pre>";
@@ -145,16 +145,19 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 			// echo "<br>";
 
 			// print_r($this->session->data['payment_address']['iso_code_2']);
+			$guestEmail = $this->session->data['guest']['email'];
+			$guestAddress2 = $this->session->data['payment_address']['iso_code_2'];
 
-			$data ['threeDSCustomerEmail'] = $this->session->data['guest']['email'];
-			$data ['threeDSDeliveryEmail'] = $this->session->data['guest']['email'];
-			$data ['threeDSMobilePhoneCountryCode'] = $this->_getCountryPhoneCode($this->session->data['payment_address']['iso_code_2']);
+			$data ['threeDSCustomerEmail'] = isset($guestEmail)&&($guestEmail)?$guestEmail:"";
+			$data ['threeDSDeliveryEmail'] = isset($guestEmail)&&($guestEmail)?$guestEmail:"";
+			$data ['threeDSMobilePhoneCountryCode'] = isset($guestAddress2)&&($guestAddress2)?$guestAddress2:"";
 			$guestPhoneNumber = preg_replace('/\D/', '',$this->session->data['guest']['telephone']);
-			$data['threeDSMobilePhoneNumber'] = $guestPhoneNumber;
-			$data['threeDSHomePhoneCountryCode'] = $this->_getCountryPhoneCode($this->session->data['payment_address']['iso_code_2']);
+			$data['threeDSMobilePhoneNumber'] = isset($guestPhoneNumber)&&($guestPhoneNumber)?$guestPhoneNumber:"";
+
+			$data['threeDSHomePhoneCountryCode'] = isset($guestAddress2)&&($guestAddress2)?$guestAddress2:"";
 			$data['threeDSHomePhoneNumber'] = $guestPhoneNumber;
-			$data['threeDSWorkPhoneCountryCode'] = $this->_getCountryPhoneCode($this->session->data['payment_address']['iso_code_2']);
-			$data ['threeDSWorkPhoneNumber'] = $guestPhoneNumber;
+			$data['threeDSWorkPhoneCountryCode'] = isset($guestAddress2)&&($guestAddress2)?$guestAddress2:"";
+			$data ['threeDSWorkPhoneNumber'] = isset($guestPhoneNumber)&&($guestPhoneNumber)?$guestPhoneNumber:"";
 			$data['threeDSIsFirstTimeItemOrder'] = "T";
 			$customer_acctAuthMethod = "01"; // as guest
 
@@ -164,25 +167,39 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		// $data['threeDSRecurringExpiry'] = "";
 
 		// Billing Address Related (Provide only if billing address is available)
-		$data['threeDSBillingCountryCode'] = $this->_getCountryCodeNumeric($this->session->data['payment_address']['iso_code_2']);
-		$data['threeDSBillingState'] = $this->session->data['payment_address']['iso_code_2'];
-		$data['threeDSBillingCity'] = $this->session->data['payment_address']['city'];
-		$data['threeDSBillingLine1'] = $this->session->data['payment_address']['address_1'];
-		$data['threeDSBillingLine2'] = $this->session->data['payment_address']['address_2'];
+		$sessionAddressIso2 = $this->session->data['payment_address']['iso_code_2'];
+
+		$data['threeDSBillingCountryCode'] = isset($sessionAddressIso2)&&($sessionAddressIso2)?$this->_getCountryCodeNumeric($sessionAddressIso2):"";
+		$data['threeDSBillingState'] = isset($sessionAddressIso2)&&($sessionAddressIso2)?$this->_getCountryCodeNumeric($sessionAddressIso2):"";
+
+		$sessionAddressCity = $this->session->data['payment_address']['city'];
+		$sessionAddress1 = $this->session->data['payment_address']['address_1'];
+		$sessionAddress2 = $this->session->data['payment_address']['address_2'];
+		$sessionPostal = $this->session->data['payment_address']['postcode'];
+		$data['threeDSBillingCity'] = isset($sessionAddressCity)&&($sessionAddressCity)?$sessionAddressCity:"";
+		$data['threeDSBillingLine1'] = isset($sessionAddress1)&&($sessionAddress1)?$sessionAddress1:"";
+		$data['threeDSBillingLine2'] = isset($sessionAddress2)&&($sessionAddress2)?$sessionAddress2:"";
 		// $data['threeDSBillingLine3'] = "";
-		$data['threeDSBillingPostalCode'] = $this->session->data['payment_address']['postcode'];
+		$data['threeDSBillingPostalCode'] = isset($sessionPostal)&&($sessionPostal)?$sessionPostal:"";
 
 		// Shipping / Delivery Related (Provide only if the payment requires shipping / delivery)
 		// $data['threeDSDeliveryTime'] = "";
 		// $data['threeDSDeliveryEmail'] = $this->session->data['guest']['email']; // using electronic delivery
-		
-		$data['threeDSShippingCountryCode'] = $this->_getCountryCodeNumeric($this->session->data['shipping_address']['iso_code_2']);
-		$data['threeDSShippingState'] = $this->session->data['shipping_address']['iso_code_2'];
-		$data['threeDSShippingCity'] = $this->session->data['shipping_address']['city'];
-		$data['threeDSShippingLine1'] = $this->session->data['shipping_address']['address_1'];
-		$data['threeDSShippingLine2'] = $this->session->data['shipping_address']['address_2'];
+		// echo "<pre>";print_r($this->session);
+
+		$sessionShipIso2 = isset($this->session->data['shipping_address'])&&($this->session->data['shipping_address'])?$this->session->data['shipping_address']['iso_code_2']:$sessionAddressIso2;
+		$sessionShipCity = isset($this->session->data['shipping_address'])&&($this->session->data['shipping_address'])?$this->session->data['shipping_address']['city']:$data['threeDSBillingCity'];
+		$sessionShipAdd1 = isset($this->session->data['shipping_address'])&&($this->session->data['shipping_address'])?$this->session->data['shipping_address']['address_1']:$data['threeDSBillingLine1'];
+		$sessionShipAdd2 = isset($this->session->data['shipping_address'])&&($this->session->data['shipping_address'])?$this->session->data['shipping_address']['address_2']:$data['threeDSBillingLine2'];
+		$sessionShipPostal = isset($this->session->data['shipping_address'])&&($this->session->data['shipping_address'])?$this->session->data['shipping_address']['postcode']:$data['threeDSBillingPostalCode'];
+
+		$data['threeDSShippingCountryCode'] = isset($sessionShipIso2)&&($sessionShipIso2)?$this->_getCountryCodeNumeric($sessionShipIso2):"";
+		$data['threeDSShippingState'] = isset($sessionShipIso2)&&($sessionShipIso2)?$sessionShipIso2:"";
+		$data['threeDSShippingCity'] = isset($sessionShipCity)&&($sessionShipCity)?$sessionShipCity:"";
+		$data['threeDSShippingLine1'] = isset($sessionShipAdd1)&&($sessionShipAdd1)?$sessionShipAdd1:"";
+		$data['threeDSShippingLine2'] = isset($sessionShipAdd2)&&($sessionShipAdd2)?$sessionShipAdd2:"";
 		// $data['threeDSBillingLine3'] = "";
-		$data['threeDSShippingPostalCode'] = $this->session->data['shipping_address']['postcode'];
+		$data['threeDSShippingPostalCode'] = isset($sessionShipPostal)&&($sessionShipPostal)?$sessionShipPostal:"";
 
 		// $data['threeDSIsAddrMatch'] = "T";
 
@@ -194,17 +211,17 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 		// Pre-Order Purchase Related (Provide only if the payment is related to Pre-Order)
 		// $data['threeDSPreOrderReason'] = "";
 		// $data['threeDSPreOrderReadyDate'] = "";
-
-		$data['threeDSIsAddrMatch'] = $this->_getDiffAddress();
-
-		$data['threeDSShippingDetails'] = ($this->_getDiffAddress()=="T")?'01':'03';
+		$diffAddress = $this->_getDiffAddress();
+		$data['threeDSIsAddrMatch'] = isset($diffAddress)&&($diffAddress)?$diffAddress:"";
+		$shippDetails = ($this->_getDiffAddress()=="T")?'01':'03';
+		$data['threeDSShippingDetails'] = isset($shippDetails)&&($shippDetails)?$shippDetails:"";
 		
 		
 		// $data ['threeDSCustomerEmail'] = ;
 
 		$challengePref = $this->config->get ( 'payment_paydollar_challenge_pref' );
-		$data ['threeDSChallengePreference'] = substr($challengePref,0,2);
-		$data['threeDSAcctAuthMethod'] = $customer_acctAuthMethod;
+		$data ['threeDSChallengePreference'] = isset($challengePref)&&($challengePref)?substr($challengePref,0,2):"";
+		$data['threeDSAcctAuthMethod'] = isset($customer_acctAuthMethod)&&($customer_acctAuthMethod)?$customer_acctAuthMethod:"";
 	
 		// echo "<pre>";print_r($data);exit;
 		if (file_exists ( DIR_TEMPLATE . $this->config->get ( 'config_template' ) . '/template/extension/payment/paydollar.twig' )) {
@@ -458,7 +475,7 @@ class ControllerExtensionPaymentPayDollar extends Controller {
 
 	private function _getDiffAddress(){
 		$b = $this->session->data['payment_address'];
-		$s = $this->session->data['shipping_address'];
+		$s = isset($this->session->data['shipping_address'])&&($this->session->data['shipping_address'])?$this->session->data['shipping_address']:$b;
 
 		$cnt = 0;
 
